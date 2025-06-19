@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bouncing TeBe Logo</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: black; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+<canvas id="dvdCanvas"></canvas>
+<script>
+  const canvas = document.getElementById('dvdCanvas');
+  const ctx = canvas.getContext('2d');
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
+
+  const logo = {
+    x: 100,
+    y: 100,
+    dx: 3,
+    dy: 3,
+    w: 200,
+    h: 200,
+    img: new Image()
+  };
+
+  // Load your local SVG image (must be served over HTTP, not file://)
+  logo.img.src = 'foo.svg';
+
+  // TeBe color palette (Lila -4 to Lila +9)
+  const tebeColors = [
+    "rgb(32,6,42)",   // Lila -4
+    "rgb(42,8,56)",   // Lila -3
+    "rgb(52,11,72)",  // Lila -2
+    "rgb(64,15,90)",  // Lila -1
+    "rgb(76,28,110)", // Lila 0 (Pantone 2617 C)
+    "rgb(86,28,120)", // Lila +1
+    "rgb(99,42,134)", // Lila +2
+    "rgb(114,60,148)", // Lila +3
+    "rgb(130,82,162)", // Lila +4
+    "rgb(146,110,175)", // Lila +5
+    "rgb(164,136,189)", // Lila +6
+    "rgb(184,164,204)", // Lila +7
+    "rgb(206,193,220)", // Lila +8
+    "rgb(230,223,237)"  // Lila +9
+  ];
+
+  function getRandomColor() {
+    return tebeColors[Math.floor(Math.random() * tebeColors.length)];
+  }
+
+  let tint = getRandomColor();
+
+  function draw() {
+    //ctx.fillStyle = 'white';
+    ctx.fillStyle = 'rgb(42,8,56)';
+    ctx.fillRect(0, 0, width, height);
+    ctx.save();
+    ctx.filter = `drop-shadow(0 0 20px ${tint})`;
+    ctx.drawImage(logo.img, logo.x, logo.y, logo.w, logo.h);
+    ctx.restore();
+  }
+
+  function update() {
+    logo.x += logo.dx;
+    logo.y += logo.dy;
+
+    let bounced = false;
+    if (logo.x <= 0 || logo.x + logo.w >= width) {
+      logo.dx *= -1;
+      bounced = true;
+    }
+    if (logo.y <= 0 || logo.y + logo.h >= height) {
+      logo.dy *= -1;
+      bounced = true;
+    }
+
+    if (bounced) {
+      tint = getRandomColor();
+    }
+  }
+
+  function loop() {
+    draw();
+    update();
+    requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  logo.img.onload = () => loop();
+</script>
+</body>
+</html>
+
