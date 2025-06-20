@@ -1,100 +1,179 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Bouncing TeBe Logo</title>
+  <meta charset="UTF-8" />
+  <title>TeBe Support</title>
   <style>
-    body { margin: 0; overflow: hidden; background: black; }
-    canvas { display: block; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: black;
+      font-family: "Segoe UI", sans-serif;
+      color: white;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      display: block;
+      cursor: pointer;
+    }
+
+    .overlay {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin: 0.5rem 0;
+      color: #fdfdfd;
+      text-shadow: 0 0 10px #9933cc;
+      transition: all 0.3s ease;
+    }
+
+    .countdown {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-top: 0.5rem;
+      color: #ffe6ff;
+      text-shadow: 0 0 8px #800080;
+    }
+
+    .info {
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      color: #ccc;
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
-<canvas id="dvdCanvas"></canvas>
-<script>
-  const canvas = document.getElementById('dvdCanvas');
-  const ctx = canvas.getContext('2d');
-  let width = canvas.width = window.innerWidth;
-  let height = canvas.height = window.innerHeight;
 
-  const logo = {
-    x: 100,
-    y: 100,
-    dx: 3,
-    dy: 3,
-    w: 200,
-    h: 200,
-    img: new Image()
-  };
+  <canvas id="dvdCanvas" title="Klick mich für Farbwechsel!"></canvas>
 
-  // Load your local SVG image (must be served over HTTP, not file://)
-  logo.img.src = 'tebe.svg';
+  <div class="overlay">
+    <h1>Countdown zur Saison 25/26</h1>
+    <div class="countdown" id="countdown"></div>
+    <div class="info">(Klick irgendwo auf den Bildschirm!)</div>
+  </div>
 
-  // TeBe color palette (Lila -4 to Lila +9)
-  const tebeColors = [
-    "rgb(32,6,42)",   // Lila -4
-    "rgb(42,8,56)",   // Lila -3
-    "rgb(52,11,72)",  // Lila -2
-    "rgb(64,15,90)",  // Lila -1
-    "rgb(76,28,110)", // Lila 0 (Pantone 2617 C)
-    "rgb(86,28,120)", // Lila +1
-    "rgb(99,42,134)", // Lila +2
-    "rgb(114,60,148)", // Lila +3
-    "rgb(130,82,162)", // Lila +4
-    "rgb(146,110,175)", // Lila +5
-    "rgb(164,136,189)", // Lila +6
-    "rgb(184,164,204)", // Lila +7
-    "rgb(206,193,220)", // Lila +8
-    "rgb(230,223,237)"  // Lila +9
-  ];
+  <script>
+    const canvas = document.getElementById('dvdCanvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
 
-  function getRandomColor() {
-    return tebeColors[Math.floor(Math.random() * tebeColors.length)];
-  }
+    const logo = {
+      x: 100,
+      y: 100,
+      dx: 3,
+      dy: 2,
+      w: 180,
+      h: 180,
+      img: new Image()
+    };
 
-  let tint = getRandomColor();
+    logo.img.src = 'tebe.svg';
 
-  function draw() {
-    //ctx.fillStyle = 'white';
-    ctx.fillStyle = 'rgb(42,8,56)';
-    ctx.fillRect(0, 0, width, height);
-    ctx.save();
-    ctx.filter = `drop-shadow(0 0 20px ${tint})`;
-    ctx.drawImage(logo.img, logo.x, logo.y, logo.w, logo.h);
-    ctx.restore();
-  }
+    const tebeColors = [
+      "rgb(32,6,42)", "rgb(42,8,56)", "rgb(52,11,72)",
+      "rgb(64,15,90)", "rgb(76,28,110)", "rgb(86,28,120)",
+      "rgb(99,42,134)", "rgb(114,60,148)", "rgb(130,82,162)",
+      "rgb(146,110,175)", "rgb(164,136,189)", "rgb(184,164,204)",
+      "rgb(206,193,220)", "rgb(230,223,237)"
+    ];
 
-  function update() {
-    logo.x += logo.dx;
-    logo.y += logo.dy;
-
-    let bounced = false;
-    if (logo.x <= 0 || logo.x + logo.w >= width) {
-      logo.dx *= -1;
-      bounced = true;
-    }
-    if (logo.y <= 0 || logo.y + logo.h >= height) {
-      logo.dy *= -1;
-      bounced = true;
+    function getRandomColor() {
+      return tebeColors[Math.floor(Math.random() * tebeColors.length)];
     }
 
-    if (bounced) {
+    let tint = getRandomColor();
+
+    function draw() {
+      ctx.fillStyle = 'rgb(42,8,56)';
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.save();
+      ctx.filter = `drop-shadow(0 0 30px ${tint})`;
+      ctx.drawImage(logo.img, logo.x, logo.y, logo.w, logo.h);
+      ctx.restore();
+    }
+
+    function update() {
+      logo.x += logo.dx;
+      logo.y += logo.dy;
+
+      let bounced = false;
+      if (logo.x <= 0 || logo.x + logo.w >= width) {
+        logo.dx *= -1;
+        bounced = true;
+      }
+      if (logo.y <= 0 || logo.y + logo.h >= height) {
+        logo.dy *= -1;
+        bounced = true;
+      }
+
+      if (bounced) {
+        tint = getRandomColor();
+      }
+    }
+
+    function loop() {
+      draw();
+      update();
+      requestAnimationFrame(loop);
+    }
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    canvas.addEventListener('click', () => {
       tint = getRandomColor();
+    });
+
+    logo.img.onload = () => loop();
+
+    // Countdown
+    const targetDate = new Date("2025-08-01T00:00:00");
+
+    function updateCountdown() {
+      const now = new Date();
+      const timeLeft = targetDate - now;
+
+      if (timeLeft <= 0) {
+        document.getElementById("countdown").textContent = "🎉 Die neue Saison läuft!";
+        return;
+      }
+
+      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((timeLeft / (1000 * 60)) % 60);
+      const seconds = Math.floor((timeLeft / 1000) % 60);
+
+      document.getElementById("countdown").textContent =
+        `${days}d ${hours}h ${minutes}m ${seconds}s`;
     }
-  }
 
-  function loop() {
-    draw();
-    update();
-    requestAnimationFrame(loop);
-  }
-
-  window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  });
-
-  logo.img.onload = () => loop();
-</script>
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
 </body>
 </html>
 
